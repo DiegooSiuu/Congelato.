@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congelato | Cold & Cool - Sistema de Recompensas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo" id="btnLogo">
+            <i class="fas fa-snowflake logo-icon"></i>
+            <h2 class="logo-text">Congelato</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" id="btnMenu"><i class="fas fa-utensils"></i> Menú</a></li>
+            <li><a href="#" id="btnRewards"><i class="fas fa-gift"></i> Recompensas</a></li>
+            <li><a href="#" id="findStore"><i class="fas fa-map-marker-alt"></i> Tienda</a></li>
+        </ul>
+        <div class="auth-buttons" id="authButtons">
+            <button class="btn-login" id="btnLoginNav"><i class="fas fa-user"></i> Iniciar Sesión</button>
+            <button class="btn-join" id="btnJoinNav"><i class="fas fa-plus"></i> Únete</button>
+        </div>
+        <div class="user-menu" id="userMenu" style="display: none;">
+            <div class="user-avatar" id="userAvatarNav">
+                <i class="fas fa-user"></i>
+            </div>
+            <span class="user-name" id="userNameNav">Usuario</span>
+            <div class="user-dropdown">
+                <a href="#" id="btnMyProfile"><i class="fas fa-id-card"></i> Mi Perfil</a>
+                <a href="#" id="btnMyRewards"><i class="fas fa-star"></i> Mis Recompensas</a>
+                <button class="btn-logout" id="btnLogoutNav"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+            </div>
+        </div>
+        <button class="cart-btn" id="cartBtn">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </nav>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-bag"></i> Tu Pedido</h3>
+            <button class="cart-close" id="cartClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-empty" id="cartEmpty">
+            <i class="fas fa-shopping-cart"></i>
+            <p>Tu carrito está vacío</p>
+            <span>Agrega productos del menú</span>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal:</span>
+                <span class="subtotal-amount" id="subtotalAmount">$0.00 MXN</span>
+            </div>
+            <button class="btn-checkout" id="btnCheckout">
+                <i class="fas fa-credit-card"></i> Proceder al Pago
+            </button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content checkout-modal">
+            <span class="close-btn" id="closeCheckout"><i class="fas fa-times"></i></span>
+            <div class="checkout-header">
+                <h2><i class="fas fa-receipt"></i> Resumen de Compra</h2>
+            </div>
+            <div class="checkout-items" id="checkoutItems"></div>
+            <div class="checkout-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="checkoutSubtotal">$0.00 MXN</span>
+                </div>
+                <div class="summary-row">
+                    <span>Total:</span>
+                    <span class="total-final" id="checkoutTotal">$0.00 MXN</span>
+                </div>
+            </div>
+            <div class="checkout-actions">
+                <button class="btn-pay" id="btnPay">
+                    <i class="fas fa-money-bill-wave"></i> Pagar en Caja
+                </button>
+                <button class="btn-cancel" id="btnCancelCheckout">Seguir Comprando</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-modal">
+            <button class="close-btn" id="closeAuth"><i class="fas fa-times"></i></button>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm" class="auth-form">
+                <div class="auth-header">
+                    <i class="fas fa-snowflake auth-icon"></i>
+                    <h2>¡Bienvenido!</h2>
+                    <p>Inicia sesión para acumular visitas</p>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-envelope"></i> Correo electrónico</label>
+                    <input type="email" id="loginEmail" placeholder="tu@correo.com" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="loginPass" placeholder="Tu contraseña" required>
+                </div>
+                <button class="btn-submit" id="btnSubmitLogin">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+                <p class="auth-switch">¿No tienes cuenta? <a href="#" id="toRegister">Únete al club</a></p>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" class="auth-form" style="display: none;">
+                <div class="auth-header">
+                    <i class="fas fa-star auth-icon"></i>
+                    <h2>Únete al Club</h2>
+                    <p>Regístrate y acumula visitas</p>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> Nombre completo</label>
+                    <input type="text" id="regName" placeholder="Tu nombre" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-envelope"></i> Correo electrónico</label>
+                    <input type="email" id="regEmail" placeholder="tu@correo.com" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-phone"></i> Teléfono</label>
+                    <input type="tel" id="regPhone" placeholder="55 1234 5678" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="regPass" placeholder="Mínimo 6 caracteres" required>
+                </div>
+                <button class="btn-submit" id="btnSubmitRegister">
+                    <i class="fas fa-user-plus"></i> Crear Cuenta
+                </button>
+                <p class="auth-switch">¿Ya tienes cuenta? <a href="#" id="toLogin">Inicia sesión</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT MODAL -->
+    <div class="modal" id="productModal">
+        <div class="modal-content product-modal">
+            <button class="close-btn" id="closeProduct"><i class="fas fa-times"></i></button>
+            <div class="product-detail" id="productDetail"></div>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>¡Visita Registrada!</h2>
+                <p id="successMessage">Gracias por tu compra</p>
+                <div class="visit-counter" id="visitCounter">
+                    <span class="visit-number" id="visitNumber">1</span>
+                    <span class="visit-label">visita(s) acumulada(s)</span>
+                </div>
+                <button class="btn-close-success" id="btnCloseSuccess">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main id="mainContent">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-snowflake"></i> ¡Frío y Delicious!
+                </div>
+                <h1>RELAJATE CON EL <span class="text-green">SABOR</span> MÁS COOL</h1>
+                <p class="hero-subtext">Disfruta el momento con el sabor más cool de la ciudad. Una experiencia retro para tu paladar que te sorprenderá.</p>
+                <div class="hero-actions">
+                    <button class="btn-cta-explore" id="exploreBtn">
+                        <i class="fas fa-utensils"></i> Explorar Menú
+                    </button>
+                    <button class="btn-cta-rewards" id="heroRewardsBtn">
+                        <i class="fas fa-gift"></i> Ver Recompensas
+                    </button>
+                </div>
+                <div class="hero-social-connect">
+                    <p class="social-label">SÍGUENOS EN REDES</p>
+                    <div class="social-icons-hero">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    <p class="social-handle">@congelato_mx</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MENU SECTION -->
+        <section id="menuSection" class="menu-container">
+            <div class="menu-header">
+                <h2 class="menu-main-title">Nuestro Menú</h2>
+                <p class="menu-subtitle">Descubre nuestras deliciosas opciones</p>
+            </div>
+
+            <div class="menu-filters">
+                <button class="filter-btn active" data-category="all">
+                    <i class="fas fa-th-large"></i> Todos
+                </button>
+                <button class="filter-btn" data-category="coffees">
+                    <i class="fas fa-coffee"></i> Cafés
+                </button>
+                <button class="filter-btn" data-category="teas">
+                    <i class="fas fa-leaf"></i> Tés
+                </button>
+                <button class="filter-btn" data-category="frappes">
+                    <i class="fas fa-blender"></i> Frapés
+                </button>
+                <button class="filter-btn" data-category="icecream">
+                    <i class="fas fa-ice-cream"></i> Helados
+                </button>
+                <button class="filter-btn" data-category="snacks">
+                    <i class="fas fa-utensils"></i> Bocadillos
+                </button>
+            </div>
+
+            <!-- CAFES ESPECIALES -->
+            <div class="menu-category" data-category="coffees">
+                <h3 class="category-title"><i class="fas fa-coffee"></i> Cafés Especiales</h3>
+                <div class="menu-grid">
+                    <div class="menu-item" data-product-id="1">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400" alt="Espresso Intenso" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Espresso Intenso</h4>
+                            <p class="item-desc">Café espresso doble con aroma intenso</p>
+                            <p class="item-price">$45 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="2">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1561882468-9110e03e0f78?auto=format&fit=crop&w=400" alt="Latte Vainilla" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Latte Vainilla</h4>
+                            <p class="item-desc">Cremoso latte con vainilla natural</p>
+                            <p class="item-price">$65 MXN</p>
+                        </div>
+                    </div>
+                                        <div class="menu-item" data-product-id="4">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=400" alt="Americano Retro" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Americano Retro</h4>
+                            <p class="item-desc">Café largo estilo americano</p>
+                            <p class="item-price">$40 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="5">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?auto=format&fit=crop&w=400" alt="Mocha Blanco" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Mocha Blanco</h4>
+                            <p class="item-desc">Chocolate blanco con espresso</p>
+                            <p class="item-price">$70 MXN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TES E INFUSIONES -->
+            <div class="menu-category" data-category="teas">
+                <h3 class="category-title"><i class="fas fa-leaf"></i> Tés e Infusiones</h3>
+                <div class="menu-grid">
+                                        <div class="menu-item" data-product-id="7">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=400" alt="Matcha Ceremonial" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Matcha Ceremonial</h4>
+                            <p class="item-desc">Matcha premium con leche</p>
+                            <p class="item-price">$75 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="8">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=400" alt="Earl Grey Clásico" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Earl Grey Clásico</h4>
+                            <p class="item-desc">Té negro con bergamota</p>
+                            <p class="item-price">$50 MXN</p>
+                        </div>
+                    </div>
+                                                        </div>
+            </div>
+
+            <!-- FRAPES -->
+            <div class="menu-category" data-category="frappes">
+                <h3 class="category-title"><i class="fas fa-blender"></i> Frapés</h3>
+                <div class="menu-grid">
+                    <div class="menu-item" data-product-id="11">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=400" alt="Caramel Frappé" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Caramel Frappé</h4>
+                            <p class="item-desc">Frappé con caramelo dorado</p>
+                            <p class="item-price">$85 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="12">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1629131726692-1accd0c53ce0?auto=format&fit=crop&w=400" alt="Cookies & Cream" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Cookies & Cream</h4>
+                            <p class="item-desc">Galleta molida con crema</p>
+                            <p class="item-price">$90 MXN</p>
+                        </div>
+                    </div>
+                                                            <div class="menu-item" data-product-id="15">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?auto=format&fit=crop&w=400" alt="Java Chip" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Java Chip</h4>
+                            <p class="item-desc">Chocolate con chips de café</p>
+                            <p class="item-price">$90 MXN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HELADOS -->
+            <div class="menu-category" data-category="icecream">
+                <h3 class="category-title"><i class="fas fa-ice-cream"></i> Helados</h3>
+                <div class="menu-grid">
+                    <div class="menu-item" data-product-id="16">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=400" alt="Vasito Clásico" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Vasito Clásico</h4>
+                            <p class="item-desc">2 bolas de helado a elección</p>
+                            <p class="item-price">$55 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="17">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400" alt="Cono Tradición" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Cono Tradición</h4>
+                            <p class="item-desc">Cono crujiente con helado</p>
+                            <p class="item-price">$45 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="18">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=400" alt="Malteada Helada" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Malteada Helada</h4>
+                            <p class="item-desc">Malteada cremosa muy fría</p>
+                            <p class="item-price">$75 MXN</p>
+                        </div>
+                    </div>
+                                                        </div>
+            </div>
+
+            <!-- BOCADILLOS -->
+            <div class="menu-category" data-category="snacks">
+                <h3 class="category-title"><i class="fas fa-utensils"></i> Bocadillos</h3>
+                <div class="menu-grid">
+                    <div class="menu-item" data-product-id="21">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400" alt="Croissant Clásico" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Croissant Clásico</h4>
+                            <p class="item-desc">Hojaldre dorado y crujiente</p>
+                            <p class="item-price">$45 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="22">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=400" alt="Panini Pavo" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Panini Pavo</h4>
+                            <p class="item-desc">Panini tostado con pavo</p>
+                            <p class="item-price">$95 MXN</p>
+                        </div>
+                    </div>
+                    <div class="menu-item" data-product-id="23">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=400" alt="Cheesecake Frutos" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Cheesecake Frutos</h4>
+                            <p class="item-desc">Pay cremoso con frutos</p>
+                            <p class="item-price">$65 MXN</p>
+                        </div>
+                    </div>
+                                        <div class="menu-item" data-product-id="25">
+                        <div class="item-image">
+                            <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=400" alt="Bagel con Crema" loading="lazy">
+                            <div class="item-overlay"><i class="fas fa-plus-circle"></i></div>
+                        </div>
+                        <div class="item-info">
+                            <h4>Bagel con Crema</h4>
+                            <p class="item-desc">Bagel tostado con queso crema</p>
+                            <p class="item-price">$55 MXN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OPEN HOURS -->
+        <section class="open-hours-full">
+            <i class="fas fa-clock icon-large"></i>
+            <h2>ESTAMOS ABIERTOS</h2>
+            <p class="time-text">Lunes a Domingo — 07:00 a 21:00 HRS</p>
+            <div class="store-address">
+                <i class="fas fa-map-marker-alt"></i>
+                <p>Jhon Spark 1001A Esq, Ambrosio Solorzano, Petroquimica, 96519 Coatzacoalcos, Ver.</p>
+            </div>
+            <div class="store-locator">
+                <button class="btn-locator" id="btnLocator">
+                    <i class="fas fa-directions"></i> Ver en Google Maps
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- REWARDS SECTION (User Profile) -->
+    <section id="userRewards" class="rewards-app-section" style="display: none;">
+        <div class="app-container">
+            <div class="app-header">
+                <button class="btn-back" id="btnBackHome">
+                    <i class="fas fa-arrow-left"></i> Volver al inicio
+                </button>
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h1>¡Hola, <span id="userNameDisplay">Usuario</span>!</h1>
+                        <p class="member-since" id="memberSince">Miembro desde 2024</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qr-main-card">
+                <div class="qr-header">
+                    <h3>Tu Código de Membresía</h3>
+                    <p>Escanéalo en caja para acumular visitas</p>
+                </div>
+                <div id="qrcode" class="qr-wrapper"></div>
+                <p class="member-id" id="memberIdDisplay">ID: 0000 0000 0000</p>
+                <div class="qr-actions">
+                    <button class="btn-wallet" id="btnAddWallet">
+                        <i class="fas fa-mobile-alt"></i> Agregar a Wallet
+                    </button>
+                </div>
+            </div>
+
+            <div class="level-card" id="levelCard">
+                <div class="level-header">
+                    <div class="level-badge" id="levelBadge">
+                        <i class="fas fa-star"></i>
+                        <span id="levelName">Fanático</span>
+                    </div>
+                    <div class="level-progress-text">
+                        <span id="currentVisits">0</span> / <span id="nextLevelVisits">20</span> visitas
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <p class="next-step" id="nextStepText">Siguiente nivel: Súper Fanático</p>
+
+                <div class="rewards-preview">
+                    <h4><i class="fas fa-gift"></i> Tu próxima recompensa:</h4>
+                    <p id="nextReward">Bebida gratis cada 10 visitas (Súper Fanático)</p>
+                </div>
+            </div>
+
+            <div class="benefits-section">
+                <h3><i class="fas fa-crown"></i> Tus Beneficios</h3>
+                <div class="benefits-grid" id="benefitsGrid">
+                    <!-- Benefits will be populated by JS -->
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h3><i class="fas fa-history"></i> Historial de Visitas</h3>
+                <div class="visit-history" id="visitHistory">
+                    <div class="history-empty">
+                        <i class="fas fa-receipt"></i>
+                        <p>Aún no tienes visitas registradas</p>
+                        <span>¡Haz tu primera compra!</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-logout-app" id="btnLogout">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-snowflake"></i>
+                <h3>Congelato</h3>
+                <p>Cold & Cool desde 2020</p>
+            </div>
+            <div class="footer-links">
+                <h4>Ubicación</h4>
+                <a href="https://maps.google.com/?q=Jhon+Spark+1001A+Esq+Ambrosio+Solorzano+Petroquimica+96519+Coatzacoalcos+Ver" target="_blank"><i class="fas fa-map-marker-alt"></i> Jhon Spark 1001A Esq, Ambrosio Solorzano, Petroquimica, 96519 Coatzacoalcos, Ver.</a>
+                <a href="#"><i class="fas fa-clock"></i> Lun-Dom: 07:00 - 21:00</a>
+                <a href="#"><i class="fas fa-phone"></i> 55-CONGELATO</a>
+                <a href="#"><i class="fas fa-envelope"></i> <span class="__cf_email__" data-cfemail="fb9394979abb9894959c9e979a8f94d59683">[email&#160;protected]</span></a>
+            </div>
+            <div class="footer-social">
+                <h4>Síguenos</h4>
+                <div class="social-icons-footer">
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Congelato "Cold & Cool". Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+</body>
+</html>
